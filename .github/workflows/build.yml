@@ -15,6 +15,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Install libclang
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libclang-18-dev
+
       - name: Install dependencies for static Qt build
         run: |
           sudo apt-get update
