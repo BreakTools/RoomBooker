@@ -26,6 +26,12 @@ jobs:
       - name: Build
         run: cmake --build build --config Release
 
+      - name: Upload Linux Executable
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.release.tag_name }}
+          files: build/RoomBookerDisplay
+
   windows:
     runs-on: windows-latest
     steps:
@@ -39,7 +45,13 @@ jobs:
           host: 'windows'
           
       - name: Configure
-        run: cmake -B build -S .
+        run: cmake -B build -S Display
         
       - name: Build
         run: cmake --build build --config Release
+
+      - name: Upload Windows Executable
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.release.tag_name }}
+          files: build/Release/RoomBookerDisplay.exe
