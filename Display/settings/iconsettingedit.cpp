@@ -1,4 +1,4 @@
-#include "IconSettingEdit.h"
+#include "iconsettingedit.h"
 #include <QFileDialog>
 #include <QLabel>
 #include <QMouseEvent>

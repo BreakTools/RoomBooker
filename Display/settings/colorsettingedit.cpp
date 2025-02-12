@@ -1,4 +1,4 @@
-#include "ColorSettingEdit.h"
+#include "colorsettingedit.h"
 #include <QColorDialog>
 #include <QEvent>
 #include <QFrame>

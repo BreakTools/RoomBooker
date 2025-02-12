@@ -1,4 +1,4 @@
-#include "FontSettingEdit.h"
+#include "fontsettingedit.h"
 #include <QFontDialog>
 #include <QLabel>
 #include <QMouseEvent>
