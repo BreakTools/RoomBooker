@@ -1,0 +1,132 @@
+{
+    "type": "home",
+    "blocks": [
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "Hey there!"
+            }
+        },
+        {
+            "type": "header",
+            "text": {
+                "type": "plain_text",
+                "text": "Book a room"
+            }
+        },
+        {
+            "type": "divider"
+        },
+        {
+            "type": "header",
+            "text": {
+                "type": "plain_text",
+                "text": "Manage your bookings"
+            }
+        },
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "Cancel a booking:"
+            },
+            "accessory": {
+                "type": "button",
+                "text": {
+                    "type": "plain_text",
+                    "text": "Unbook"
+                },
+                "style": "danger",
+                "action_id": "unbook_clicked"
+            }
+        },
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "Make a booking end later:"
+            },
+            "accessory": {
+                "type": "button",
+                "text": {
+                    "type": "plain_text",
+                    "text": "Extend"
+                },
+                "action_id": "extend_clicked"
+            }
+        },
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "Make a booking start earlier:"
+            },
+            "accessory": {
+                "type": "button",
+                "text": {
+                    "type": "plain_text",
+                    "text": "Prepend"
+                },
+                "action_id": "prepend_clicked"
+            }
+        },
+        {
+            "type": "divider"
+        },
+        {
+            "type": "header",
+            "text": {
+                "type": "plain_text",
+                "text": "Admin area"
+            }
+        },
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "Show list of rooms and their IDs:"
+            },
+            "accessory": {
+                "type": "button",
+                "text": {
+                    "type": "plain_text",
+                    "text": "Show"
+                },
+                "action_id": "show_rooms_clicked"
+            }
+        },
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "Create a new bookable room:"
+            },
+            "accessory": {
+                "type": "button",
+                "text": {
+                    "type": "plain_text",
+                    "text": "Create"
+                },
+                "style": "primary",
+                "action_id": "create_room_clicked"
+            }
+        },
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "Remove a room:"
+            },
+            "accessory": {
+                "type": "button",
+                "text": {
+                    "type": "plain_text",
+                    "text": "Remove"
+                },
+                "style": "danger",
+                "action_id": "delete_room_clicked"
+            }
+        }
+    ]
+}

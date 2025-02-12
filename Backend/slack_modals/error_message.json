@@ -1,0 +1,29 @@
+{
+	"type": "modal",
+	"callback_id": "error_message",
+	"title": {
+		"type": "plain_text",
+		"text": "Room Booker",
+		"emoji": true
+	},
+	"close": {
+		"type": "plain_text",
+		"text": "Exit",
+		"emoji": true
+	},
+	"blocks": [
+		{
+			"type": "section",
+			"text": {
+				"type": "plain_text",
+				"text": "",
+				"emoji": true
+			}
+		},
+		{
+			"type": "image",
+			"image_url": "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExeWdqeTRpd3BibDZqNXJ4Z2YzbGdhOGprcXAydHg2ZGx5NThwdXZzayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xUPGcEliCc7bETyfO8/giphy.gif",
+			"alt_text": "Funny looking cat"
+		}
+	]
+}

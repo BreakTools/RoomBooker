@@ -1,0 +1,47 @@
+{
+  "type": "modal",
+  "callback_id": "delete_room",
+  "title": {
+    "type": "plain_text",
+    "text": "Room Booker",
+    "emoji": true
+  },
+  "submit": {
+    "type": "plain_text",
+    "text": "Delete room",
+    "emoji": true
+  },
+  "close": {
+    "type": "plain_text",
+    "text": "Cancel",
+    "emoji": true
+  },
+  "blocks": [
+    {
+      "type": "input",
+      "block_id": "delete_room_select",
+      "element": {
+        "type": "static_select",
+        "placeholder": {
+          "type": "plain_text",
+          "text": "Select a room",
+          "emoji": true
+        },
+        "options": [],
+        "action_id": "delete_room_select_selection"
+      },
+      "label": {
+        "type": "plain_text",
+        "text": "Please select the room you want to delete.",
+        "emoji": true
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*Warning: This action is irreversible. All bookings associated with the room will also be deleted.*"
+      }
+    }
+  ]
+}

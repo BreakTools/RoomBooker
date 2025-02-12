@@ -1,0 +1,34 @@
+{
+    "type": "modal",
+    "callback_id": "create_room",
+    "title": {
+        "type": "plain_text",
+        "text": "Room Booker",
+        "emoji": true
+    },
+    "submit": {
+        "type": "plain_text",
+        "text": "Create room",
+        "emoji": true
+    },
+    "close": {
+        "type": "plain_text",
+        "text": "Cancel",
+        "emoji": true
+    },
+    "blocks": [
+        {
+            "type": "input",
+            "block_id": "create_room_input",
+            "element": {
+                "type": "plain_text_input",
+                "action_id": "room_name"
+            },
+            "label": {
+                "type": "plain_text",
+                "text": "What should the new room be called?",
+                "emoji": false
+            }
+        }
+    ]
+}

@@ -1,0 +1,35 @@
+{
+  "type": "modal",
+  "callback_id": "unbooking",
+  "title": {
+    "type": "plain_text",
+    "text": "Room Booker"
+  },
+  "submit": {
+    "type": "plain_text",
+    "text": "Unbook"
+  },
+  "close": {
+    "type": "plain_text",
+    "text": "Cancel"
+  },
+  "blocks": [
+    {
+      "type": "input",
+      "block_id": "unbooking_select",
+      "element": {
+        "type": "static_select",
+        "placeholder": {
+          "type": "plain_text",
+          "text": "Select a booking"
+        },
+        "options": [],
+        "action_id": "unbooking_select_selection"
+      },
+      "label": {
+        "type": "plain_text",
+        "text": "Please select the booking you want to remove."
+      }
+    }
+  ]
+}

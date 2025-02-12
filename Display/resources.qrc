@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>resources/ZillaSlabLight.ttf</file>
+        <file>resources/ZillaSlabSemiBold.ttf</file>
+        <file>resources/defaulticon.png</file>
+    </qresource>
+</RCC>

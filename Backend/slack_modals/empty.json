@@ -1,0 +1,13 @@
+{
+	"type": "modal",
+	"callback_id": "empty",
+	"title": {
+		"type": "plain_text",
+		"text": "Room Booker"
+	},
+	"close": {
+		"type": "plain_text",
+		"text": "Exit"
+	},
+	"blocks": []
+}
