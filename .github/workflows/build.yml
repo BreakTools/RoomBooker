@@ -15,15 +15,35 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install libclang
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libclang-18-dev
-
       - name: Install dependencies for static Qt build
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential perl python3
+          sudo apt-get install -y build-essential perl python3 libclang-18-dev libgl-dev libfontconfig1-dev libinput-dev \
+          libfreetype-dev \
+          libx11-dev \
+          libx11-xcb-dev \
+          libxcb-cursor-dev \
+          libxcb-glx0-dev \
+          libxcb-icccm4-dev \
+          libxcb-image0-dev \
+          libxcb-keysyms1-dev \
+          libxcb-randr0-dev \
+          libxcb-render-util0-dev \
+          libxcb-shape0-dev \
+          libxcb-shm0-dev \
+          libxcb-sync-dev \
+          libxcb-util-dev \
+          libxcb-xfixes0-dev \
+          libxcb-xinerama0-dev \
+          libxcb-xkb-dev \
+          libxcb1-dev \
+          libxext-dev \
+          libxfixes-dev \
+          libxi-dev \
+          libxkbcommon-dev \
+          libxkbcommon-x11-dev \
+          libxrender-dev \
+          libatspi2.0-dev
 
       - name: Download and build static Qt
         run: |
