@@ -15,17 +15,25 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Qt
-        uses: jurplel/install-qt-action@v4
-        with:
-          version: '6.8.1'
-          
+      - name: Install dependencies for static Qt build
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential perl python3
+
+      - name: Download and build static Qt
+        run: |
+          wget https://download.qt.io/official_releases/qt/6.8/6.8.1/single/qt-everywhere-src-6.8.1.tar.xz
+          tar xf qt-everywhere-src-6.8.1.tar.xz
+          cd qt-everywhere-src-6.8.1
+          ./configure -static -prefix $HOME/qt6_static -opensource -confirm-license -nomake examples -nomake tests
+          make -j$(nproc)
+          make install
+
       - name: Configure
-        run: cmake -B build -S Display
+        run: cmake -B build -S Display -DCMAKE_PREFIX_PATH=$HOME/qt6_static
         
       - name: Build
         run: cmake --build build --config Release
-
       - name: Upload Linux Executable
         uses: softprops/action-gh-release@v2
         with:
@@ -38,18 +46,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       
-      - name: Setup Qt
-        uses: jurplel/install-qt-action@v4
-        with:
-          version: '6.8.1'
-          host: 'windows'
+      - name: Download and build static Qt
+        run: |
+          Invoke-WebRequest -Uri "https://download.qt.io/official_releases/qt/6.8/6.8.1/single/qt-everywhere-src-6.8.1.tar.xz" -OutFile "qt-everywhere-src-6.8.1.tar.xz"
+          tar -xf qt-everywhere-src-6.8.1.tar.xz
+          cd qt-everywhere-src-6.8.1
+          configure -static -prefix %USERPROFILE%\qt6_static -opensource -confirm-license -nomake examples -nomake tests
+          nmake
+          nmake install
           
       - name: Configure
-        run: cmake -B build -S Display
+        run: cmake -B build -S Display -DCMAKE_PREFIX_PATH=%USERPROFILE%\qt6_static
         
       - name: Build
         run: cmake --build build --config Release
-
       - name: Upload Windows Executable
         uses: softprops/action-gh-release@v2
         with:
