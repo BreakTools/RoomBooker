@@ -1,0 +1,45 @@
+name: Build executables
+
+on:
+  release:
+    types:
+      - created
+
+permissions:
+  contents: write
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Qt 
+      - uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.8.1'
+          
+      - name: Configure
+        run: cmake -B build -S Display
+        
+      - name: Build
+        run: cmake --build build --config Release
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Qt
+        uses: jurplel/install-qt-action@v24
+        with:
+          version: '6.8.1'
+          host: 'windows'
+          
+      - name: Configure
+        run: cmake -B build -S .
+        
+      - name: Build
+        run: cmake --build build --config Release
