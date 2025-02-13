@@ -78,8 +78,9 @@ jobs:
         
       - name: Package for Linux
         run: linuxdeploy-x86_64.AppImage --executable=package/RoomBookerDisplay --output=RoomBookerDisplay --plugin=qt --appdir LinuxAppDir
-
+      
       - name: Upload Linux AppImage
-        uses: actions/upload-artifact@v2
+        uses: softprops/action-gh-release@v2
         with:
-          name: RoomBookerDisplay.AppImage
+          tag_name: ${{ github.event.release.tag_name }}
+          files: Display/Output/RoomBookerDisplay.AppImage
