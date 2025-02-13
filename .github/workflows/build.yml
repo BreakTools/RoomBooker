@@ -38,9 +38,6 @@ jobs:
       - name: Package for Windows
         run: windeployqt6.exe package/RoomBookerDisplay.exe
 
-      - name: Debug - List package contents
-        run: dir package
-
       - name: Compile final installer
         run: |
           $env:PACKAGE_PATH="${{ github.workspace }}/package"
@@ -51,3 +48,38 @@ jobs:
         with:
           tag_name: ${{ github.event.release.tag_name }}
           files: Display/Output/RoomBookerDisplayInstaller.exe
+
+  linux:
+    runs-on: ubuntu-14.04.6
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.8.1'
+
+      - name: Install LinuxDeploy
+        uses: miurahr/install-linuxdeploy-action@v1
+        with:
+          plugins: qt appimage
+
+      - name: Configure build
+        run: cmake -B build -S Display  
+      
+      - name: Build
+        run: cmake --build build --config Release
+
+      - name: Copy executable to package folder
+        run: |
+          mkdir package
+          cp build/RoomBookerDisplay package/
+        
+      - name: Package for Linux
+        run: linuxdeploy-x86_64.AppImage --executable=package/RoomBookerDisplay --output=RoomBookerDisplay --plugin=qt --appdir LinuxAppDir
+
+      - name: Upload Linux AppImage
+        uses: actions/upload-artifact@v2
+        with:
+          name: RoomBookerDisplay.AppImage
