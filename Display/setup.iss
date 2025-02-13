@@ -6,7 +6,7 @@
 #define MyAppPublisher "BreakTools"
 #define MyAppURL "https://www.breaktools.info"
 #define MyAppExeName "RoomBookerDisplay.exe"
-#define SourcePath GetEnv("SourcePath")
+#define SourcePath GetEnv("PACKAGE_PATH")
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.

@@ -38,8 +38,13 @@ jobs:
       - name: Package for Windows
         run: windeployqt6.exe package/RoomBookerDisplay.exe
 
+      - name: Debug - List package contents
+        run: dir package
+
       - name: Compile final installer
-        run: iscc /DSourcePath="${{ github.workspace }}/package" ${{ github.workspace }}/Display/setup.iss
+        run: |
+          $env:PACKAGE_PATH="${{ github.workspace }}/package"
+          iscc ${{ github.workspace }}/Display/setup.iss
 
       - name: Upload Windows Installer
         uses: softprops/action-gh-release@v2
