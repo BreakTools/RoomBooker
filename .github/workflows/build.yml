@@ -9,94 +9,40 @@ permissions:
   contents: write
 
 jobs:
-  linux:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Install dependencies for static Qt build
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential perl python3 libclang-18-dev libgl-dev libfontconfig1-dev libinput-dev \
-          libfreetype-dev \
-          libx11-dev \
-          libx11-xcb-dev \
-          libxcb-cursor-dev \
-          libxcb-glx0-dev \
-          libxcb-icccm4-dev \
-          libxcb-image0-dev \
-          libxcb-keysyms1-dev \
-          libxcb-randr0-dev \
-          libxcb-render-util0-dev \
-          libxcb-shape0-dev \
-          libxcb-shm0-dev \
-          libxcb-sync-dev \
-          libxcb-util-dev \
-          libxcb-xfixes0-dev \
-          libxcb-xinerama0-dev \
-          libxcb-xkb-dev \
-          libxcb1-dev \
-          libxext-dev \
-          libxfixes-dev \
-          libxi-dev \
-          libxkbcommon-dev \
-          libxkbcommon-x11-dev \
-          libxrender-dev \
-          libatspi2.0-dev
-
-      - name: Download and build static Qt
-        run: |
-          wget https://download.qt.io/official_releases/qt/6.8/6.8.1/single/qt-everywhere-src-6.8.1.tar.xz
-          tar xf qt-everywhere-src-6.8.1.tar.xz
-          rm qt-everywhere-src-6.8.1.tar.xz
-          cd qt-everywhere-src-6.8.1
-          ./configure -static -prefix $HOME/qt6_static -opensource -confirm-license -nomake examples -nomake tests \
-            -skip qtactiveqt -skip qt3d -skip qtcharts -skip qtdeclarative -skip qtgamepad -skip qtlocation \
-            -skip qtsensors -skip qtserialport -skip qtwebengine -skip qtwebchannel -skip qtwebglplugin \
-            -skip qtquickcontrols2 -skip qtquickcontrols -skip qtquicktimeline -skip qtquick3d \
-            -skip qtremoteobjects -skip qtconnectivity -skip qtvirtualkeyboard -skip qtwinextras -skip qtx11extras
-          make -j$(nproc)
-          make install
-
-      - name: Configure
-        run: cmake -B build -S Display -DCMAKE_PREFIX_PATH=$HOME/qt6_static
-        
-      - name: Build
-        run: cmake --build build --config Release
-      - name: Upload Linux Executable
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ github.event.release.tag_name }}
-          files: build/RoomBookerDisplay
-
   windows:
     runs-on: windows-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
       
-      - name: Download and build static Qt
-        run: |
-          Invoke-WebRequest -Uri "https://download.qt.io/official_releases/qt/6.8/6.8.1/single/qt-everywhere-src-6.8.1.tar.xz" -OutFile "qt-everywhere-src-6.8.1.tar.xz"
-          tar -xf qt-everywhere-src-6.8.1.tar.xz
-          Remove-Item qt-everywhere-src-6.8.1.tar.xz
-          cd qt-everywhere-src-6.8.1
-          configure -static -prefix $env:USERPROFILE\qt6_static -opensource -confirm-license -nomake examples -nomake tests `
-            -skip qtactiveqt -skip qt3d -skip qtcharts -skip qtdeclarative -skip qtgamepad -skip qtlocation `
-            -skip qtsensors -skip qtserialport -skip qtwebengine -skip qtwebchannel -skip qtwebglplugin `
-            -skip qtquickcontrols2 -skip qtquickcontrols -skip qtquicktimeline -skip qtquick3d `
-            -skip qtremoteobjects -skip qtconnectivity -skip qtvirtualkeyboard -skip qtwinextras -skip qtx11extras
-          nmake
-          nmake install
-          
-      - name: Configure
-        run: cmake -B build -S Display -DCMAKE_PREFIX_PATH=%USERPROFILE%\qt6_static
-        
+      - name: Setup Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.8.1'
+          host: 'windows'
+
+      - name: Install Inno Setup
+        run: choco install innosetup -y
+
+      - name: Configure build
+        run: cmake -B build -S Display  
+      
       - name: Build
         run: cmake --build build --config Release
-      - name: Upload Windows Executable
+
+      - name: Copy executable to package folder
+        run: |
+          mkdir package
+          copy build/Release/RoomBookerDisplay.exe package/
+
+      - name: Package for Windows
+        run: windeployqt6.exe package/RoomBookerDisplay.exe
+
+      - name: Compile final installer
+        run: iscc /DSourcePath="${{ github.workspace }}/package" ${{ github.workspace }}/Display/setup.iss
+
+      - name: Upload Windows Installer
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event.release.tag_name }}
-          files: build/Release/RoomBookerDisplay.exe
+          files: package/RoomBookerDisplayInstaller.exe
