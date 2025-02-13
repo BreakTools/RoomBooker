@@ -1,6 +1,6 @@
-aiohttp=3.11.12
+aiohttp==3.11.12
 aiosqlite==0.21.0
 fastapi[standard]==0.115.8
 slack_bolt==1.22.0
 python-dotenv==1.0.1
-pytz=2025.1
+pytz==2025.1
