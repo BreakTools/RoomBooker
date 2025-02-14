@@ -85,4 +85,4 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event.release.tag_name }}
-          files: package/RoomBookerDisplay.AppImage
+          files: package/RoomBookerDisplay-x86_64.AppImage
