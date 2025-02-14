@@ -26,8 +26,8 @@ jobs:
 
       - name: Replace [VERSION_NUMBER] with release name
         run: |
-          RELEASE_NAME="${{ github.event.release.name }}"
-          powershell -Command "(Get-Content Display/settings/settingspopup.cpp) -replace '\[VERSION_NUMBER\]', '$RELEASE_NAME' | Set-Content Display/settings/settingspopup.cpp"
+          $RELEASE_NAME="${{ github.event.release.name }}"
+          (Get-Content Display/settings/settingspopup.cpp) -replace '\[VERSION_NUMBER\]', $RELEASE_NAME | Set-Content Display/settings/settingspopup.cpp
 
       - name: Configure build
         run: cmake -B build -S Display  
