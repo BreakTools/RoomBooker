@@ -1,7 +1,8 @@
 [Desktop Entry]
 Type=Application
 Name=RoomBookerDisplay
-Exec=RoomBookerDisplay
+Version=1.0
+Exec=AppRun
 Icon=defaulticon
 Comment=The Room Booker Display
 Categories=Utility;
