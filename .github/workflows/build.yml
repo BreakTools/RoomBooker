@@ -30,10 +30,11 @@ jobs:
       - name: Build
         run: cmake --build build --config Release
 
-      - name: Copy executable to package folder
+      - name: Copy files to package folder
         run: |
           mkdir package
           copy build/Release/RoomBookerDisplay.exe package/
+          copy Display/icon.ico package/
 
       - name: Package for Windows
         run: windeployqt6.exe package/RoomBookerDisplay.exe
