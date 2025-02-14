@@ -10,14 +10,17 @@
 #include <QWidget>
 
 BookingDisplay::BookingDisplay(int &argc, char **argv)
-    : QApplication(argc, argv), m_bookingWidget(new BookingWidget()),
-      m_bookingName(new BookingName()), m_bookingInfo(new BookingInfo()),
-      m_bookingStatus(new BookingStatus()),
-      m_dataFetchingHandler(new DataFetchingHandler()),
-      m_upcomingBookings(new UpcomingBookings()) {
+    : QApplication(argc, argv) {
   configureStoredColors();
   addFontsToDatabase();
   populateSettingsIfNeeded();
+
+  m_bookingWidget = new BookingWidget();
+  m_bookingName = new BookingName();
+  m_bookingInfo = new BookingInfo();
+  m_bookingStatus = new BookingStatus();
+  m_dataFetchingHandler = new DataFetchingHandler();
+  m_upcomingBookings = new UpcomingBookings();
 
   configureWidgetLayout();
   connectSignals();

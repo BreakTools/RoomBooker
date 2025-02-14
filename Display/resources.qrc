@@ -3,5 +3,6 @@
         <file>resources/ZillaSlabLight.ttf</file>
         <file>resources/ZillaSlabSemiBold.ttf</file>
         <file>resources/defaulticon.png</file>
+        <file>icon.png</file>
     </qresource>
 </RCC>

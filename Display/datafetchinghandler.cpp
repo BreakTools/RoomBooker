@@ -1,5 +1,6 @@
 #include "datafetchinghandler.h"
 #include "settingstrings.h"
+#include <QApplication>
 #include <QDebug>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -12,12 +13,14 @@ DataFetchingHandler::DataFetchingHandler(QObject *parent)
     : QObject{parent}, m_networkManager(new QNetworkAccessManager()),
       m_getRequest(new QNetworkRequest()) {
   retrieveSettings();
-  QTimer *getRequestTimer = new QTimer(this);
-  connect(getRequestTimer, &QTimer::timeout, this,
+  QTimer *m_getRequestTimer = new QTimer(this);
+  connect(m_getRequestTimer, &QTimer::timeout, this,
           &DataFetchingHandler::getBookingData);
   connect(m_networkManager, &QNetworkAccessManager::finished, this,
           &DataFetchingHandler::onBookingDataRequestFinished);
-  getRequestTimer->start(1000);
+  connect(qApp, &QApplication::aboutToQuit, this,
+          &DataFetchingHandler::stopDataFetching);
+  m_getRequestTimer->start(1000);
 }
 
 void DataFetchingHandler::retrieveSettings() {
@@ -200,4 +203,9 @@ QString DataFetchingHandler::getTimeStringFromStartEndTime(int startTime,
   QDateTime start = QDateTime::fromSecsSinceEpoch(startTime);
   QDateTime end = QDateTime::fromSecsSinceEpoch(endTime + 1);
   return start.toString("hh:mm") + " - " + end.toString("hh:mm");
+}
+
+void DataFetchingHandler::stopDataFetching() {
+  m_getRequestTimer->stop();
+  delete m_getRequestTimer;
 }

@@ -14,11 +14,10 @@ BookingWidget::BookingWidget(QWidget *parent)
       settings.value(UNBOOKED_COLOR_SETTING).value<QColor>();
 
   this->setWindowTitle("BreakTools Room Booker");
-  QIcon windowIcon(":/resources/defaulticon.png");
+  QIcon windowIcon(":/icon.png");
   this->setWindowIcon(windowIcon);
   configureAnimation();
-  this->setWindowFlags(Qt::FramelessWindowHint);
-  this->showMaximized();
+  this->showFullScreen();
 }
 
 void BookingWidget::changeStatusColor(QColor newColor) {

@@ -109,7 +109,8 @@ void SettingsPopup::populateWidgets() {
                                    "required for changes to take effect.");
   restartText->setAlignment(Qt::AlignCenter);
   mainLayout->addWidget(restartText);
-  QLabel *creditsText = new QLabel("Software by Mervin van Brakel :)");
+  QLabel *creditsText =
+      new QLabel("Room Booker v[VERSION_NUMBER] by Mervin van Brakel :)");
   creditsText->setAlignment(Qt::AlignCenter);
   mainLayout->addWidget(creditsText);
 
@@ -133,7 +134,7 @@ QWidget *SettingsPopup::getBottomButtons() {
 
   QPushButton *closeProgram = new QPushButton("Close program");
   layout->addWidget(closeProgram);
-  connect(closeProgram, &QPushButton::clicked, qApp, &QCoreApplication::quit);
+  connect(closeProgram, &QPushButton::clicked, qApp, &QApplication::quit);
 
   layout->addStretch();
 

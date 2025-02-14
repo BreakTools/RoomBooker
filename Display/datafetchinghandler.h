@@ -4,6 +4,7 @@
 #include "datatypes.h"
 #include <QList>
 #include <QObject>
+#include <QTimer>
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkRequest>
 
@@ -22,6 +23,7 @@ private:
   QNetworkRequest *m_getRequest;
   CurrentBookingData m_storedCurrentBookingData;
   QList<UpcomingBookingData> m_storedUpcomingBookings;
+  QTimer *m_getRequestTimer;
 
   QString m_apiAddress;
   int m_roomId;
@@ -50,6 +52,8 @@ private:
 
   QString getSystemTimezoneId();
   QString getTimeStringFromStartEndTime(int startTime, int endTime);
+
+  void stopDataFetching();
 };
 
 #endif // DATAFETCHINGHANDLER_H
