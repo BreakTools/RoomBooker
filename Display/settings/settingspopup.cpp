@@ -146,6 +146,9 @@ QWidget *SettingsPopup::getBottomButtons() {
 }
 
 void SettingsPopup::restartProgram() {
-  qApp->quit();
-  QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
+  QString program = qApp->arguments()[0];
+  QStringList arguments = qApp->arguments();
+  QProcess::startDetached(program, arguments);
+
+  QCoreApplication::quit();
 }

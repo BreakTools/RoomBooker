@@ -140,8 +140,6 @@ async def send_booking_list_modal(ack, body, client) -> None:
 
     list_modal["blocks"].extend(await get_booking_blocks_from_days(days, user_timezone))
 
-    logger.info(list_modal)
-
     await client.views_open(trigger_id=body["trigger_id"], view=list_modal)
 
 
