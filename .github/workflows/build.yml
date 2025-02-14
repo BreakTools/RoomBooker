@@ -50,7 +50,7 @@ jobs:
           files: Display/Output/RoomBookerDisplayInstaller.exe
 
   linux:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -71,16 +71,18 @@ jobs:
       - name: Build
         run: cmake --build build --config Release
 
-      - name: Copy executable to package folder
+      - name: Copy files to package folder
         run: |
           mkdir package
           cp build/RoomBookerDisplay package/
-        
+          cp Display/resources/defaulticon.png package/
+          cp Display/.desktop package/
+
       - name: Package for Linux
-        run: linuxdeploy-x86_64.AppImage --executable=package/RoomBookerDisplay --output=appimage --plugin=qt --appdir AppDir
+        run: linuxdeploy-x86_64.AppImage --executable=package/RoomBookerDisplay --output=appimage --plugin=qt --appdir package
       
       - name: Upload Linux AppImage
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event.release.tag_name }}
-          files: Display/Output/RoomBookerDisplay.AppImage
+          files: package/RoomBookerDisplay.AppImage

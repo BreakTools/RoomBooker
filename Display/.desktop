@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=RoomBookerDisplay
+Exec=RoomBookerDisplay
+Icon=defaulticon
+Comment=The Room Booker Display
+Categories=Utility;
+Terminal=false
