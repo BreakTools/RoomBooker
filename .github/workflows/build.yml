@@ -79,7 +79,7 @@ jobs:
           cp Display/RoomBookerDisplay.desktop package/
 
       - name: Package for Linux
-        run: linuxdeploy-x86_64.AppImage --executable=package/RoomBookerDisplay --output=appimage --plugin=qt --appdir package
+        run: linuxdeploy-x86_64.AppImage --executable=package/RoomBookerDisplay --output=appimage --desktop-file=package/RoomBookerDisplay.desktop --icon-file=package/defaulticon.png --plugin=qt --appdir package
       
       - name: Upload Linux AppImage
         uses: softprops/action-gh-release@v2
