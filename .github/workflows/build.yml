@@ -76,7 +76,7 @@ jobs:
           mkdir package
           cp build/RoomBookerDisplay package/
           cp Display/resources/defaulticon.png package/
-          cp Display/.desktop package/
+          cp Display/RoomBookerDisplay.desktop package/
 
       - name: Package for Linux
         run: linuxdeploy-x86_64.AppImage --executable=package/RoomBookerDisplay --output=appimage --plugin=qt --appdir package
