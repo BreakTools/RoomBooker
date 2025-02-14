@@ -2,7 +2,7 @@
 Type=Application
 Name=RoomBookerDisplay
 Version=1.0
-Exec=AppRun
+Exec=RoomBookerDisplay
 Icon=icon
 Comment=The Room Booker Display
 Categories=Utility;
