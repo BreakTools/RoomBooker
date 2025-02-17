@@ -65,9 +65,11 @@ First you'll need to create a Slack bot and add it to your organization.
 }
 ```
 - Go to the Install App tab and install the app to your organization. On this page you'll also find the Bot User OAuth Token which you'll need later.
-- Go to the Basic Information tab, fidn App Level Tokens and click on Create Token and Scopes. Give your token a name and add the `connections:write` scope. You'll now see the App Level token, which you'll need later.
+- Go to the Basic Information tab, find App Level Tokens and click on Create Token and Scopes. Give your token a name and add the `connections:write` scope. You'll now see the App Level token, which you'll need later.
+
+Now you need to run the Docker image.
 - Pull the backend Docker image by running `docker pull ghcr.io/breaktools/room-booker-backend:{version}`, where {version} should be replaced by the version you're using (e.g. 1.0.1).
-- Run the backend by running `docker run -e SLACK_BOT_TOKEN="{bot_token}" -e SLACK_APP_TOKEN="{app_token}" -e DISPLAY_API_PORT="{api_port}" -t  ghcr.io/breaktools/room-booker-backend:VERSION`, where {bot_token}, {app_token} and {api_port} should be replaced by the values you've gotten from previous steps and the port you wish to run the backend on.
+- Run the backend by running `docker run -e SLACK_BOT_TOKEN="{bot_token}" -e SLACK_APP_TOKEN="{app_token}" -e DISPLAY_API_PORT="{api_port}" -t  ghcr.io/breaktools/room-booker-backend:VERSION`, where {bot_token}, {app_token} should be replaced by the values you've gotten from previous steps and {api_port} should be replaced by the port you wish to run the backend on.
 
 Your backend is now running! You can try it by opening Slack, clicking on the Room Booker bot and adding a room.
 
