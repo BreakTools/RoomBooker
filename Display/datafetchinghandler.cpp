@@ -79,6 +79,8 @@ void DataFetchingHandler::onBookingDataRequestFinished(
   QList<UpcomingBookingData> upcomingBookings =
       getUpcomingBookings(parsedBookingDataObject);
   processUpcomingBookings(upcomingBookings);
+
+  getRequestReply->deleteLater();
 }
 
 QJsonObject DataFetchingHandler::getParsedBookingDataObjectFromReplyString(
