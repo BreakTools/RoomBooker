@@ -97,3 +97,49 @@ jobs:
         with:
           tag_name: ${{ github.event.release.tag_name }}
           files: RoomBookerDisplay-x86_64.AppImage
+
+
+  linux-arm:
+    runs-on: ubuntu-22.04-arm
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.8.1'
+
+      - name: Download linuxdeploy for ARM
+        run: |
+          wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-aarch64.AppImage
+          chmod +x linuxdeploy-aarch64.AppImage
+          wget https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-aarch64.AppImage
+          chmod +x linuxdeploy-plugin-qt-aarch64.AppImage
+
+      - name: Replace [VERSION_NUMBER] with release name
+        run: |
+          RELEASE_NAME="${{ github.event.release.name }}"
+          sed -i "s/\[VERSION_NUMBER\]/$RELEASE_NAME/g" ./Display/settings/settingspopup.cpp
+
+      - name: Configure build
+        run: cmake -B build -S Display  
+      
+      - name: Build
+        run: cmake --build build --config Release
+
+      - name: Copy files to package folder
+        run: |
+          mkdir package
+          cp build/RoomBookerDisplay package/
+          cp Display/icon.png package/
+          cp Display/RoomBookerDisplay.desktop package/
+
+      - name: Package for Linux
+        run: linuxdeploy-aarch64.AppImage --executable=package/RoomBookerDisplay --output=appimage --desktop-file=package/RoomBookerDisplay.desktop --icon-file=package/icon.png --plugin=qt --appdir package
+      
+      - name: Upload Linux AppImage
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.release.tag_name }}
+          files: RoomBookerDisplay-aarch64.AppImage
