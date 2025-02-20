@@ -8,6 +8,7 @@
 #include <QTimer>
 #include <QVBoxLayout>
 #include <QWidget>
+#include <qevent.h>
 
 BookingDisplay::BookingDisplay(int &argc, char **argv)
     : QApplication(argc, argv) {
@@ -148,4 +149,19 @@ void BookingDisplay::updateCurrentBooking(
 void BookingDisplay::openSettingsWindow() {
   SettingsPopup settingsPopup;
   settingsPopup.exec();
+}
+
+bool BookingDisplay::notify(QObject *receiver, QEvent *event) {
+  if (event->type() == QEvent::KeyPress) {
+    QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+    if (keyEvent->key() == Qt::Key_Escape) {
+      QApplication::quit();
+      return true;
+    }
+    if (keyEvent->key() == Qt::Key_S) {
+      openSettingsWindow();
+      return true;
+    }
+  }
+  return QApplication::notify(receiver, event);
 }

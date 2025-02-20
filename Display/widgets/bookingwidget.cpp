@@ -18,6 +18,8 @@ BookingWidget::BookingWidget(QWidget *parent)
   this->setWindowIcon(windowIcon);
   configureAnimation();
   this->showFullScreen();
+  QCursor cursor = Qt::BlankCursor;
+  this->setCursor(cursor);
 }
 
 void BookingWidget::changeStatusColor(QColor newColor) {

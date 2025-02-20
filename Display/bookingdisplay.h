@@ -14,6 +14,9 @@ class BookingDisplay : public QApplication {
 public:
   BookingDisplay(int &argc, char **argv);
 
+protected:
+  bool notify(QObject *receiver, QEvent *event) override;
+
 private:
   BookingWidget *m_bookingWidget;
   BookingName *m_bookingName;
