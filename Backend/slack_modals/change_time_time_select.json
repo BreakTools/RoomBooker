@@ -1,0 +1,62 @@
+{
+    "type": "modal",
+    "callback_id": "change_time_time_select",
+    "title": {
+        "type": "plain_text",
+        "text": "Room Booker"
+    },
+    "submit": {
+        "type": "plain_text",
+        "text": "Change"
+    },
+    "close": {
+        "type": "plain_text",
+        "text": "Cancel"
+    },
+    "blocks": [
+        {
+            "type": "section",
+            "block_id": "select_text",
+            "text": {
+                "type": "mrkdwn",
+                "text": "FILLED IN BY CODE"
+            }
+        },
+        {
+            "type": "input",
+            "block_id": "start_time_select",
+            "label": {
+                "type": "plain_text",
+                "text": "Select start time:"
+            },
+            "element": {
+                "type": "timepicker",
+                "initial_time": "FILLED IN BY CODE",
+                "timezone": "FILLED IN BY CODE",
+                "placeholder": {
+                    "type": "plain_text",
+                    "text": "Select time"
+                },
+                "action_id": "start_time_select_selection"
+            }
+        },
+        {
+            "type": "input",
+            "block_id": "end_time_select",
+            "label": {
+                "type": "plain_text",
+                "text": "Select end time:"
+            },
+            "element": {
+                "type": "timepicker",
+                "initial_time": "FILLED IN BY CODE",
+                "timezone": "FILLED IN BY CODE",
+                "placeholder": {
+                    "type": "plain_text",
+                    "text": "Select time"
+                },
+                "action_id": "end_time_select_selection"
+            }
+        }
+    ]
+}

@@ -38,5 +38,9 @@ class OverlappingBookingError(Exception):
     """Exception for when a booking overlaps with another booking."""
 
 
+class IncorrectTimeError(Exception):
+    """Exception for when a booking has incorrect timing."""
+
+
 class RoomNameTakenError(Exception):
     """Exception for when a room name is already taken."""

@@ -84,3 +84,35 @@ async def get_day_end_time_from_timezone(
     """
     today = datetime.now(user_timezone)
     return int(today.replace(hour=23, minute=59, second=59).timestamp())
+
+
+async def get_new_unix_start_end_time_from_booking_and_time_strings(
+    booking: Booking, start_time: str, end_time: str, user_timezone: pytz.tzinfo
+) -> tuple[int, int]:
+    """Gets the start and end time of a booking in Unix timestamp format. Bit of a wonky function
+    but Slack's time pickers only return data in HH:MM format. We do have the booking data so from
+    that we can determine the date of the booking and then combine that with the time strings to
+    create a Unix timestamp.
+
+    Args:
+        booking: The booking to get the start and end time for.
+        start_time: The new start time of the booking.
+        end_time: The new end time of the booking.
+        user_timezone: The user's timezone.
+
+    Returns:
+        The start and end time of the booking in Unix timestamp format.
+    """
+    booking_date = datetime.fromtimestamp(booking.start_time, user_timezone).strftime(
+        "%d-%m-%Y"
+    )
+
+    new_start_datetime = datetime.strptime(
+        f"{booking_date} {start_time}", "%d-%m-%Y %H:%M"
+    )
+    new_end_datetime = datetime.strptime(f"{booking_date} {end_time}", "%d-%m-%Y %H:%M")
+
+    start_time = int(user_timezone.localize(new_start_datetime).timestamp())
+    end_time = int(user_timezone.localize(new_end_datetime).timestamp())
+
+    return start_time, end_time

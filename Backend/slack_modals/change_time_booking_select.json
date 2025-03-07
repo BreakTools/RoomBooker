@@ -1,0 +1,44 @@
+{
+    "type": "modal",
+    "callback_id": "change_time_booking_select",
+    "title": {
+        "type": "plain_text",
+        "text": "Room Booker"
+    },
+    "submit": {
+        "type": "plain_text",
+        "text": "Change"
+    },
+    "close": {
+        "type": "plain_text",
+        "text": "Cancel"
+    },
+    "blocks": [
+        {
+            "type": "input",
+            "block_id": "booking_select",
+            "element": {
+                "type": "static_select",
+                "placeholder": {
+                    "type": "plain_text",
+                    "text": "Select an item"
+                },
+                "options": [
+                    "FILLED IN BY CODE"
+                ],
+                "initial_option": {
+                    "text": {
+                        "type": "plain_text",
+                        "text": "FILLED IN BY CODE"
+                    },
+                    "value": "FILLED IN BY CODE"
+                },
+                "action_id": "change_time_booking_selection"
+            },
+            "label": {
+                "type": "plain_text",
+                "text": "Select a booking you want to change the time for:"
+            }
+        }
+    ]
+}

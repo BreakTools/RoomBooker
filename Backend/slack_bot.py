@@ -19,6 +19,7 @@ import utility
 from data_models import (
     Booking,
     BookingDay,
+    IncorrectTimeError,
     OverlappingBookingError,
     Room,
     RoomNameTakenError,
@@ -186,15 +187,9 @@ async def send_unbooking_modal(ack, body, client) -> None:
     await client.views_open(trigger_id=body["trigger_id"], view=unbooking_modal)
 
 
-@app.action("extend_clicked")
-async def send_extending_modal(ack, body, client) -> None:
-    """Sends the extending modal to the user.
-
-    Args:
-        ack: Slack acknowledge
-        body: Slack body
-        client: Slack client
-    """
+@app.action("change_time_clicked")
+async def send_change_time_modal(ack, body, client) -> None:
+    """Sends the change time modal to the user."""
     await ack()
 
     user_id = body["user"]["id"]
@@ -205,69 +200,24 @@ async def send_extending_modal(ack, body, client) -> None:
     if not bookings:
         await client.views_open(
             trigger_id=body["trigger_id"],
-            view=await get_error_modal(
-                "You have no current or upcoming bookings to extend!"
-            ),
+            view=await get_error_modal("You have no bookings to change the time for!"),
         )
         return
 
     user_info = await client.users_info(user=user_id)
+    user_timezone = user_info["user"]["tz"]
 
-    extending_modal = await get_modal("time_change")
-    extending_modal["callback_id"] = "booking_extend"
-    extending_modal["submit"]["text"] = "Extend"
-    extending_modal["blocks"][0]["label"]["text"] = (
-        "Select the booking you want to extend:"
-    )
-    extending_modal["blocks"][2]["label"]["text"] = "Select the extending duration:"
+    options = await bookings_to_slack_options(bookings, user_timezone)
 
-    extending_modal["blocks"][0]["element"][
-        "options"
-    ] = await bookings_to_slack_options(bookings, user_info["user"]["tz"])
-
-    await client.views_open(trigger_id=body["trigger_id"], view=extending_modal)
-
-
-@app.action("prepend_clicked")
-async def send_prepending_modal(ack, body, client) -> None:
-    """Sends the prepending modal to the user.
-
-    Args:
-        ack: Slack acknowledge
-        body: Slack body
-        client: Slack client
-    """
-    await ack()
-
-    user_id = body["user"]["id"]
-    bookings = await database_interfacing.get_current_and_upcoming_bookings_for_user_id(
-        user_id
+    change_time_booking_select_modal = await get_modal("change_time_booking_select")
+    change_time_booking_select_modal["blocks"][0]["element"]["options"] = options
+    change_time_booking_select_modal["blocks"][0]["element"]["initial_option"] = (
+        options[0]
     )
 
-    if not bookings:
-        await client.views_open(
-            trigger_id=body["trigger_id"],
-            view=await get_error_modal(
-                "You have no current or upcoming bookings to prepend!"
-            ),
-        )
-        return
-
-    user_info = await client.users_info(user=user_id)
-
-    prepending_modal = await get_modal("time_change")
-    prepending_modal["callback_id"] = "booking_prepend"
-    prepending_modal["submit"]["text"] = "Prepend"
-    prepending_modal["blocks"][0]["label"]["text"] = (
-        "Select the booking you want to prepend:"
+    await client.views_open(
+        trigger_id=body["trigger_id"], view=change_time_booking_select_modal
     )
-    prepending_modal["blocks"][2]["label"]["text"] = "Select the prepending duration:"
-
-    prepending_modal["blocks"][0]["element"][
-        "options"
-    ] = await bookings_to_slack_options(bookings, user_info["user"]["tz"])
-
-    await client.views_open(trigger_id=body["trigger_id"], view=prepending_modal)
 
 
 @app.action("show_rooms_clicked")
@@ -428,9 +378,10 @@ async def process_unbooking(ack, body, client, view) -> None:
     await client.views_open(trigger_id=body["trigger_id"], view=success_modal)
 
 
-@app.view("booking_extend")
-async def process_extend(ack, body, client, view) -> None:
-    """Processes a booking extend from the extending modal.
+@app.view("change_time_booking_select")
+async def process_change_time_booking_select(ack, body, client, view) -> None:
+    """Processes a change time booking selection by opening a new modal where the user can
+    select their new times.
 
     Args:
         ack: Slack acknowledge
@@ -438,75 +389,86 @@ async def process_extend(ack, body, client, view) -> None:
         client: Slack client
         view: Slack view
     """
+    await ack()
+
+    user_id = body["user"]["id"]
+
     selected_booking_id = int(
-        view["state"]["values"]["booking_select"]["booking_select_selection"][
+        view["state"]["values"]["booking_select"]["change_time_booking_selection"][
             "selected_option"
         ]["value"]
     )
-    selected_duration = (
-        int(
-            view["state"]["values"]["time_change_duration"][
-                "time_change_duration_selection"
-            ]["selected_option"]["value"]
-        )
-        * 60
-    )
     booking = await database_interfacing.get_booking_by_id(selected_booking_id)
 
+    user_info = await client.users_info(user=user_id)
+    user_timezone = user_info["user"]["tz"]
+
+    change_time_time_select_modal = await get_modal("change_time_time_select")
+    change_time_time_select_modal["blocks"][0]["text"]["text"] = (
+        f"Select the new start and end time for the booking *{booking.name}*."
+    )
+
+    start_time_string = await utility.get_time_string_from_timestamp(
+        booking.start_time, pytz.timezone(user_timezone)
+    )
+    change_time_time_select_modal["blocks"][1]["element"]["initial_time"] = (
+        start_time_string
+    )
+    change_time_time_select_modal["blocks"][1]["element"]["timezone"] = user_timezone
+
+    end_time_string = await utility.get_time_string_from_timestamp(
+        booking.end_time, pytz.timezone(user_timezone)
+    )
+    change_time_time_select_modal["blocks"][2]["element"]["initial_time"] = (
+        end_time_string
+    )
+    change_time_time_select_modal["blocks"][2]["element"]["timezone"] = user_timezone
+
+    change_time_time_select_modal["private_metadata"] = str(booking.id)
+
+    await client.views_open(
+        trigger_id=body["trigger_id"], view=change_time_time_select_modal
+    )
+
+
+@app.view("change_time_time_select")
+async def process_change_time_time_select(ack, body, client, view) -> None:
+    """Parses the newly selected start and end times, validates them and updates the booking."""
+    selected_booking_id = int(view["private_metadata"])
+
+    selected_start_time_string = view["state"]["values"]["start_time_select"][
+        "start_time_select_selection"
+    ]["selected_time"]
+
+    selected_end_time_string = view["state"]["values"]["end_time_select"][
+        "end_time_select_selection"
+    ]["selected_time"]
+
+    user_timezone = view["state"]["values"]["start_time_select"][
+        "start_time_select_selection"
+    ]["timezone"]
+
+    booking = await database_interfacing.get_booking_by_id(selected_booking_id)
+
+    (
+        start_time,
+        end_time,
+    ) = await utility.get_new_unix_start_end_time_from_booking_and_time_strings(
+        booking,
+        selected_start_time_string,
+        selected_end_time_string,
+        pytz.timezone(user_timezone),
+    )
+
     try:
-        await database_interfacing.extend_booking(booking, selected_duration)
-    except OverlappingBookingError as error_message:
-        errors = {"time_change_duration": str(error_message)}
+        await database_interfacing.change_booking_time(booking, start_time, end_time)
+    except IncorrectTimeError as error_message:
+        errors = {"end_time_select": str(error_message)}
         await ack(response_action="errors", errors=errors)
         return
 
-    await ack()
-
-    success_modal = await get_modal("empty")
-    user_info = await client.users_info(user=body["user"]["id"])
-    old_readable_end_time = await utility.get_time_string_from_timestamp(
-        booking.end_time, pytz.timezone(user_info["user"]["tz"])
-    )
-    new_readable_end_time = await utility.get_time_string_from_timestamp(
-        booking.end_time + selected_duration, pytz.timezone(user_info["user"]["tz"])
-    )
-    success_modal["blocks"].append(
-        await get_text_block(
-            f"Your booking *{booking.name}* has been successfully extended from *{old_readable_end_time}* to *{new_readable_end_time}*! :white_check_mark:"
-        )
-    )
-    await client.views_open(trigger_id=body["trigger_id"], view=success_modal)
-
-
-@app.view("booking_prepend")
-async def process_prepend(ack, body, client, view) -> None:
-    """Processes a booking prepend from the prepending modal.
-
-    Args:
-        ack: Slack acknowledge
-        body: Slack body
-        client: Slack client
-        view: Slack view
-    """
-    selected_booking_id = int(
-        view["state"]["values"]["booking_select"]["booking_select_selection"][
-            "selected_option"
-        ]["value"]
-    )
-    selected_duration = (
-        int(
-            view["state"]["values"]["time_change_duration"][
-                "time_change_duration_selection"
-            ]["selected_option"]["value"]
-        )
-        * 60
-    )
-    booking = await database_interfacing.get_booking_by_id(selected_booking_id)
-
-    try:
-        await database_interfacing.prepend_booking(booking, selected_duration)
     except OverlappingBookingError as error_message:
-        errors = {"time_change_duration": str(error_message)}
+        errors = {"end_time_select": str(error_message)}
         await ack(response_action="errors", errors=errors)
         return
 
@@ -517,12 +479,18 @@ async def process_prepend(ack, body, client, view) -> None:
     old_readable_start_time = await utility.get_time_string_from_timestamp(
         booking.start_time, pytz.timezone(user_info["user"]["tz"])
     )
+    old_readable_end_time = await utility.get_time_string_from_timestamp(
+        booking.end_time, pytz.timezone(user_info["user"]["tz"])
+    )
     new_readable_start_time = await utility.get_time_string_from_timestamp(
-        booking.start_time - selected_duration, pytz.timezone(user_info["user"]["tz"])
+        start_time, pytz.timezone(user_info["user"]["tz"])
+    )
+    new_readable_end_time = await utility.get_time_string_from_timestamp(
+        end_time, pytz.timezone(user_info["user"]["tz"])
     )
     success_modal["blocks"].append(
         await get_text_block(
-            f"Your booking *{booking.name}* has been successfully prepended from *{old_readable_start_time}* to *{new_readable_start_time}*! :white_check_mark:"
+            f"Your booking *{booking.name}* has been successfully changed from *{old_readable_start_time} - {old_readable_end_time}* to *{new_readable_start_time} - {new_readable_end_time}*! :white_check_mark:"
         )
     )
     await client.views_open(trigger_id=body["trigger_id"], view=success_modal)

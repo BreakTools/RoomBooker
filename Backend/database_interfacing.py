@@ -10,7 +10,13 @@ from pathlib import Path
 
 import aiosqlite
 
-from data_models import Booking, OverlappingBookingError, Room, RoomNameTakenError
+from data_models import (
+    Booking,
+    IncorrectTimeError,
+    OverlappingBookingError,
+    Room,
+    RoomNameTakenError,
+)
 
 logger = logging.getLogger("database_interface")
 DATABASE_PATH = Path(__file__).parent / "room_bookings.db"
@@ -112,91 +118,48 @@ async def delete_booking(booking_id: int) -> None:
     await cursor.close()
 
 
-async def extend_booking(booking: Booking, extension_time_in_seconds: int) -> None:
-    """Extends the end time of a booking.
+async def change_booking_time(
+    booking: Booking, new_start_time: int, new_end_time
+) -> None:
+    """Changes the booking time in the database to the new times.
 
     Args:
-        booking: The booking to extend.
-        extension_time_in_seconds: The amount of seconds to extend the booking by.
-
-    Raises:
-        OverlappingBookingError: If the changed booking time overlaps with another booking.
+        booking: The booking to change the time for.
+        new_start_time: The new start time.
+        new_end_time: The new end time.
     """
-    new_end_time = booking.end_time + extension_time_in_seconds
+    if new_start_time >= new_end_time:
+        error_message = "Can't change booking time: Start time is after end time!"
+        raise IncorrectTimeError(error_message)
 
-    # This is a bit silly and quirky innit
-    check_booking = Booking(
+    new_booking = Booking(
         id=booking.id,
         room_id=booking.room_id,
-        start_time=booking.end_time + 1,
+        start_time=new_start_time,
         end_time=new_end_time,
         name=booking.name,
         user_id=booking.user_id,
         user_name=booking.user_name,
     )
 
-    overlapping_booking = await _check_for_overlapping_booking(check_booking)
+    overlapping_booking = await _check_for_overlapping_booking(
+        new_booking, booking_id_to_skip=booking.id
+    )
     if overlapping_booking is not None:
-        error_message = f"Extending the booking would overlap with another booking called '{overlapping_booking.name}' by {overlapping_booking.user_name}!"
+        error_message = f"A booking called '{overlapping_booking.name}' by {overlapping_booking.user_name} already exists during that time slot!"
         raise OverlappingBookingError(error_message)
 
-    logger.info(
-        "Extending booking %s by %s in the database by %s seconds.",
-        booking.name,
-        booking.user_name,
-        extension_time_in_seconds,
-    )
+    new_booking.end_time -= 1  # Little sneaky -1 to prevent overlap problems
 
     database = await _get_database_connection()
     cursor = await database.cursor()
     await cursor.execute(
-        "UPDATE bookings SET end_time = ? WHERE id = ?",
-        (new_end_time, booking.id),
-    )
-    await database.commit()
-    await cursor.close()
-
-
-async def prepend_booking(booking: Booking, prepended_time_in_seconds: int) -> None:
-    """Prepends the start time of a booking.
-
-    Args:
-        booking: The booking to prepend.
-        prepended_time_in_seconds: The amount of seconds to prepend the booking by.
-
-    Raises:
-        OverlappingBookingError: If the changed booking time overlaps with another booking.
-    """
-    new_start_time = booking.start_time - prepended_time_in_seconds
-
-    # Same silly logic as before
-    check_booking = Booking(
-        id=booking.id,
-        room_id=booking.room_id,
-        start_time=new_start_time,
-        end_time=booking.start_time - 1,
-        name=booking.name,
-        user_id=booking.user_id,
-        user_name=booking.user_name,
-    )
-
-    overlapping_booking = await _check_for_overlapping_booking(check_booking)
-    if overlapping_booking is not None:
-        error_message = f"Prepending the booking would overlap with another booking called '{overlapping_booking.name}' by {overlapping_booking.user_name}!"
-        raise OverlappingBookingError(error_message)
-
-    logger.info(
-        "Prepending booking %s by %s in the database by %s seconds.",
-        booking.name,
-        booking.user_name,
-        prepended_time_in_seconds,
-    )
-
-    database = await _get_database_connection()
-    cursor = await database.cursor()
-    await cursor.execute(
-        "UPDATE bookings SET start_time = ? WHERE id = ?",
-        (new_start_time, booking.id),
+        """
+        UPDATE bookings
+        SET start_time = ?, end_time = ?
+        WHERE id = ?
+        """,
+        (new_start_time, new_end_time, booking.id),
     )
     await database.commit()
     await cursor.close()
@@ -444,24 +407,43 @@ async def get_coming_week_bookings_for_room(room: Room) -> list[Booking]:
     ]
 
 
-async def _check_for_overlapping_booking(new_booking: Booking) -> Booking | None:
+async def _check_for_overlapping_booking(
+    new_booking: Booking, booking_id_to_skip=None
+) -> Booking | None:
     """Gets all bookings that overlap with the given booking.
 
     Args:
         booking: The booking to check for overlaps.
+        booking_id_to_skip: The ID of the booking to skip in the search.
 
     Returns:
         The overlapping booking or None if there is none.
     """
     database = await _get_database_connection()
     cursor = await database.cursor()
-    await cursor.execute(
-        """
-        SELECT * FROM bookings
-        WHERE room_id = ? AND NOT (start_time >= ? OR end_time <= ?)
-        """,
-        (new_booking.room_id, new_booking.end_time, new_booking.start_time),
-    )
+
+    if booking_id_to_skip is not None:
+        await cursor.execute(
+            """
+            SELECT * FROM bookings
+            WHERE room_id = ? AND NOT (start_time >= ? OR end_time <= ?) AND id != ?
+            """,
+            (
+                new_booking.room_id,
+                new_booking.end_time,
+                new_booking.start_time,
+                booking_id_to_skip,
+            ),
+        )
+    else:
+        await cursor.execute(
+            """
+            SELECT * FROM bookings
+            WHERE room_id = ? AND NOT (start_time >= ? OR end_time <= ?)
+            """,
+            (new_booking.room_id, new_booking.end_time, new_booking.start_time),
+        )
+
     fetched_booking = await cursor.fetchone()
 
     if fetched_booking:

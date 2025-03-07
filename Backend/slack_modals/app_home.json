@@ -45,30 +45,15 @@
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": "Make a booking end later:"
+                "text": "Change time of a booking:"
             },
             "accessory": {
                 "type": "button",
                 "text": {
                     "type": "plain_text",
-                    "text": "Extend"
+                    "text": "Change"
                 },
-                "action_id": "extend_clicked"
-            }
-        },
-        {
-            "type": "section",
-            "text": {
-                "type": "mrkdwn",
-                "text": "Make a booking start earlier:"
-            },
-            "accessory": {
-                "type": "button",
-                "text": {
-                    "type": "plain_text",
-                    "text": "Prepend"
-                },
-                "action_id": "prepend_clicked"
+                "action_id": "change_time_clicked"
             }
         },
         {
