@@ -343,11 +343,21 @@ async def process_booking(ack, body, client, view) -> None:
     readable_end_time = await utility.get_time_string_from_timestamp(
         booking.end_time, pytz.timezone(user_info["user"]["tz"])
     )
-    success_modal["blocks"].append(
-        await get_text_block(
-            f"You've successfully booked *{room.name}* from *{readable_start_time}* to *{readable_end_time}*! :white_check_mark:"
+
+    if await utility.is_booking_time_very_late(
+        booking, pytz.timezone(user_info["user"]["tz"])
+    ):
+        success_modal["blocks"].append(
+            await get_text_block(
+                f":warning: Your booking time is very late, are you okay?! You've booked *{room.name}* from *{readable_start_time}* to *{readable_end_time}*! :white_check_mark:"
+            )
         )
-    )
+    else:
+        success_modal["blocks"].append(
+            await get_text_block(
+                f"You've successfully booked *{room.name}* from *{readable_start_time}* to *{readable_end_time}*! :white_check_mark:"
+            )
+        )
     await client.views_open(trigger_id=body["trigger_id"], view=success_modal)
 
 

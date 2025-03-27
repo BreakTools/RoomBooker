@@ -116,3 +116,23 @@ async def get_new_unix_start_end_time_from_booking_and_time_strings(
     end_time = int(user_timezone.localize(new_end_datetime).timestamp())
 
     return start_time, end_time
+
+
+async def is_booking_time_very_late(
+    booking: Booking, user_timezone: pytz.tzinfo
+) -> bool:
+    """Checks if a booking time is very late. The Slack desktop datetime picker is AM/PM based, which confuses
+    people who are used to a 24 hour clock. Over and over again people have booked a room during the night and told me
+    my booking system was broken. Thus I've written this function so they'll know when they've filled in the wrong time.
+
+    Args:
+        booking: The booking to check.
+        user_timezone: The user's timezone.
+
+    Returns:
+        True if the booking is very late, False otherwise
+    """
+    start_time = datetime.fromtimestamp(booking.start_time, user_timezone)
+    end_time = datetime.fromtimestamp(booking.end_time, user_timezone)
+
+    return start_time.hour < 6 or end_time.hour > 21
