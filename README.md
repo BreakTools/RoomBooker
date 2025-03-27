@@ -78,4 +78,4 @@ Running the display software is simple!
 - Download the display software from the releases tab here on this GitHub page. Download the .AppImage file for Linux machines and the .exe file for Windows machines (the .exe file is an installer which will install the software for you). 
 - Open the display software and click on the BreakTools logo, this will open the settings menu.
 - Fill in the API address of your backend, it should look something like `http://145.90.27.19:5014`, and click on the restart program button.
-That's it! There's a large amount of other settings available in that menu be sure to tweak them all to your liking and make them match your organization's branding!
+That's it! There's a large amount of other settings available in that menu so be sure to tweak them all to your liking and make them match your organization's branding!
