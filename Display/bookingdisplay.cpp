@@ -158,7 +158,8 @@ bool BookingDisplay::notify(QObject *receiver, QEvent *event) {
       QApplication::quit();
       return true;
     }
-    if (keyEvent->key() == Qt::Key_S) {
+    if (keyEvent->key() == Qt::Key_S &&
+        (keyEvent->modifiers() & Qt::AltModifier)) {
       openSettingsWindow();
       return true;
     }
