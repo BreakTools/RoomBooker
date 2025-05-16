@@ -1,6 +1,9 @@
 # Room Booker
 A simple room booking solution using a Slack bot and a small display! Here's a GIF that shows you everything you need to know:
-![roombooker](https://github.com/user-attachments/assets/365dddd8-1cd7-4efb-ba06-0cf1d86ae926)
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/365dddd8-1cd7-4efb-ba06-0cf1d86ae926" />
+</p>
+
 
 # Why use Room Booker?
 Does the following situation sound familiar to you?
@@ -12,8 +15,17 @@ Does the following situation sound familiar to you?
 Then Room Booker is the perfect free and open source solution for you!
 
 # Fully customizable!
-You can customize the look of Room Booker to match the style of your company. Every font, color and image can be individually changed!
-![linkedinexample](https://github.com/user-attachments/assets/cc791ef2-5176-4e25-8605-9546fb0ecc56)
+You can customize the look of Room Booker to match the style of your company. Every font, color and image can be individually changed.
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/cc791ef2-5176-4e25-8605-9546fb0ecc56" />
+</p>
+
+
+# User friendly!
+It's fast and easy to use on both desktop and mobile platforms.
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/a24147a9-312d-443f-a958-56367d87d6dc" />
+</p>
 
 
 # Requirements for running Room Booker
