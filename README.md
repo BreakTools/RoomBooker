@@ -1,7 +1,6 @@
 # Room Booker
-A simple room booking solution using a Slack bot and a small display! Here's a 3 second GIF that shows you everything you need to know:
-
-(GIF will go here)
+A simple room booking solution using a Slack bot and a small display! Here's a GIF that shows you everything you need to know:
+![roombooker](https://github.com/user-attachments/assets/365dddd8-1cd7-4efb-ba06-0cf1d86ae926)
 
 # Why use Room Booker?
 Does the following situation sound familiar to you?
