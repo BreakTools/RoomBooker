@@ -22,10 +22,11 @@ You can customize the look of Room Booker to match the style of your company. Ev
 
 
 # User friendly!
-It's fast and easy to use on both desktop and mobile platforms.
+It's fast and easy to use on both desktop and mobile platforms. Here's an example booking through the Slack app:
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/a24147a9-312d-443f-a958-56367d87d6dc" />
+  <img src="https://github.com/user-attachments/assets/48ae8b05-ffed-468f-a930-84294908dc7d" />
 </p>
+
 
 
 # Requirements for running Room Booker
