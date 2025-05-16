@@ -11,6 +11,11 @@ Does the following situation sound familiar to you?
 
 Then Room Booker is the perfect free and open source solution for you!
 
+# Fully customizable!
+You can customize the look of Room Booker to match the style of your company. Every font, color and image can be individually changed!
+![linkedinexample](https://github.com/user-attachments/assets/cc791ef2-5176-4e25-8605-9546fb0ecc56)
+
+
 # Requirements for running Room Booker
 To start using Room Booker you'll need the following things:
 - A Slack workspace.
