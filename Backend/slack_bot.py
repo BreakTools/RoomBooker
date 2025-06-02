@@ -124,7 +124,7 @@ async def send_booking_list_modal(ack, body, client) -> None:
     if not upcoming_bookings:
         await client.views_open(
             trigger_id=body["trigger_id"],
-            view=await get_error_modal("There are no upcoming bookings for this room!"),
+            view=await get_error_modal("There are no upcoming bookings in the next 7 days for this room!"),
         )
         return
 
