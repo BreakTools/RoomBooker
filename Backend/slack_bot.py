@@ -166,10 +166,6 @@ async def send_unbooking_modal(ack, body, client) -> None:
             )
         )
 
-    bookings = await database_interfacing.get_current_and_upcoming_bookings_for_user_id(
-        user_id
-    )
-
     if not bookings:
         await client.views_open(
             trigger_id=body["trigger_id"],
